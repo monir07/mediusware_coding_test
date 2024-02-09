@@ -1,7 +1,6 @@
 {% extends 'backend/base.html' %}
-
+{% load get_params %}
 {% block title %} Product List {% endblock %}
-
 {% block content %}
 
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -16,8 +15,16 @@
                     <input type="text" name="title" placeholder="Product Title" class="form-control">
                 </div>
                 <div class="col-md-2">
-                    <select name="variant" id="" class="form-control">
+                    <select name="variant_title" id="" class="form-control">
                         <option selected disabled>--Select A Variant--</option>
+                        {% for variant_title_group, variant_titles in variant_title_options.values %}
+                            <optgroup label="{{ variant_title_group }}">
+                            {% for variant_title in variant_titles %}
+                                <option value="{{ variant_title }}">{{ variant_title }}</option>
+                            {% endfor %}
+                            </optgroup>
+                        {% endfor %}
+
                         {% for item in variants %}
                         <option value="{{ item.pk }}">{{ item.variant_title }}</option>
                         {% endfor %}
@@ -61,7 +68,7 @@
                     {% for item in items %}
                     <tr>
                         <td>{{ forloop.counter }}</td>
-                        <td>{{ item.title|title }} <br> Created at : {{ item.created_at }}</td>
+                        <td>{{ item.title|title }} <br> Created at : {{ item.created_at }}, {{ item.created_at|minutes_ago }}</td>
                         <td>{{ item.description }}</td>
                         <td>
                             <dl class="row mb-0" style="height: 80px; overflow: hidden" id="variant">
@@ -83,6 +90,7 @@
                         <td>
                             <div class="btn-group btn-group-sm">
                                 <a href="" class="btn btn-success">Edit</a>
+                                
                             </div>
                         </td>
                     </tr>

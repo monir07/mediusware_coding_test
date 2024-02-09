@@ -25,27 +25,50 @@ class CreateProductView(generic.TemplateView):
         context['variants'] = list(variants.all())
         return context
 
+
+from collections import defaultdict
+
 class ProductListView(generic.ListView):
     template_name = 'products/list.html'
     model = Product
     context_object_name = 'items'
-    queryset = Product.objects.all()
+    queryset = Product.objects.filter()
     paginate_by = 2
 
     def get_queryset(self):
         queryset = super().get_queryset()
         # queryset = self.query_filter(queryset)
+        # Retrieve the filtering parameters from the request
+        product_title = self.request.GET.get('title')
+        created_at = self.request.GET.get('date')
+        variant_title = self.request.GET.get('variant_title')
+        price_from = self.request.GET.get('price_from')
+        price_to = self.request.GET.get('price_to')
 
-        query_param = self.request.GET.copy()
-        search_param = query_param.get('query', None)
-        if search_param:
-            Qr = format_search_string(self.search_fields, search_param)
-            queryset = queryset.filter(Qr)
+        # Filter the queryset based on the provided parameters
+        query = Q()
+        if product_title:
+            query &= Q(title__icontains=product_title)
+        if created_at:
+            query &= Q(created_at__date=created_at)
+        queryset = queryset.filter(query)
+
+        if variant_title:
+            queryset = queryset.filter(productvariant__pk=variant_title).distinct()
+
+        if price_from and price_to:
+            queryset = queryset.filter(productvariantprice__price__range=[price_from, price_to]).distinct()
+        
         return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        variants = ProductVariant.objects.all()
-        context['product'] = True
-        context['variants'] = variants
+        # context['variants'] = ProductVariant.objects.all()
+        product_variants = ProductVariant.objects.all()
+        variant_title_options = defaultdict(list)
+        # Group variant_title options by Variant title
+        for variant in product_variants:
+            variant_title_options[variant.variant.title].append(variant.variant_title)
+        context['variant_title_options'] = variant_title_options
+        context['variants'] = product_variants
         return context
