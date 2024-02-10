@@ -54,7 +54,7 @@ class ProductListView(generic.ListView):
         queryset = queryset.filter(query)
 
         if variant_title:
-            queryset = queryset.filter(productvariant__pk=variant_title).distinct()
+            queryset = queryset.filter(productvariant__variant_title__icontains=variant_title).distinct()
 
         if price_from and price_to:
             queryset = queryset.filter(productvariantprice__price__range=[price_from, price_to]).distinct()
@@ -63,12 +63,10 @@ class ProductListView(generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # context['variants'] = ProductVariant.objects.all()
         product_variants = ProductVariant.objects.all()
-        variant_title_options = defaultdict(list)
+        variant_options = defaultdict(set)
         # Group variant_title options by Variant title
         for variant in product_variants:
-            variant_title_options[variant.variant.title].append(variant.variant_title)
-        context['variant_title_options'] = variant_title_options
-        context['variants'] = product_variants
+            variant_options[variant.variant.title].add(variant.variant_title)
+        context['variant_options'] = dict(variant_options)
         return context

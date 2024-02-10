@@ -17,16 +17,12 @@
                 <div class="col-md-2">
                     <select name="variant_title" id="" class="form-control">
                         <option selected disabled>--Select A Variant--</option>
-                        {% for variant_title_group, variant_titles in variant_title_options.values %}
-                            <optgroup label="{{ variant_title_group }}">
-                            {% for variant_title in variant_titles %}
+                        {% for key, value in variant_options.items %}
+                            <optgroup label="{{ key }}">
+                            {% for variant_title in value %}
                                 <option value="{{ variant_title }}">{{ variant_title }}</option>
                             {% endfor %}
                             </optgroup>
-                        {% endfor %}
-
-                        {% for item in variants %}
-                        <option value="{{ item.pk }}">{{ item.variant_title }}</option>
                         {% endfor %}
 
                     </select>

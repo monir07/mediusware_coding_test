@@ -17,6 +17,7 @@ const CreateProduct = (props) => {
     console.log(typeof props.variants)
     // handle click event of the Add button
     const handleAddClick = () => {
+        console.log('handle click working...');
         let all_variants = JSON.parse(props.variants.replaceAll("'", '"')).map(el => el.id)
         let selected_variants = productVariants.map(el => el.option);
         let available_variants = all_variants.filter(entry1 => !selected_variants.some(entry2 => entry1 == entry2))
@@ -37,6 +38,7 @@ const CreateProduct = (props) => {
 
     // remove product variant
     const removeProductVariant = (index) => {
+        console.log('Remove product variant');
         let product_variants = [...productVariants]
         product_variants.splice(index, 1)
         setProductVariant(product_variants)
@@ -78,6 +80,8 @@ const CreateProduct = (props) => {
     let saveProduct = (event) => {
         event.preventDefault();
         // TODO : write your code here to save the product
+        console.log('submit form working...');
+        // console.log(productVariantPrices);
     }
 
 
