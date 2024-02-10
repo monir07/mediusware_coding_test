@@ -3,4 +3,4 @@
 3. run command pipenv install then install all project dependency like: django or so on.
 4. then check all dependency pip freeze.
 5. then install node_modules or copy node_modules from another project and run command 'npm run watch' then automatically generated project related static js and css file.
-6. then run command python src/manage.py runserver to start django development server.
+6. then run command from parent directory python src/manage.py runserver to start django development server.
